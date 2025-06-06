@@ -1,0 +1,27 @@
+{
+  "name": "molige",
+  "version": "1.0.0",
+  "description": "MoLiGe is a mock list generator easily used to help us don't need a real database list from back-end. ",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/matheuspbmarques/molige.git"
+  },
+  "keywords": [
+    "mock",
+    "list",
+    "help",
+    "function",
+    "create",
+    "generator"
+  ],
+  "author": "Matheus Marques",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/matheuspbmarques/molige/issues"
+  },
+  "homepage": "https://github.com/matheuspbmarques/molige#readme"
+}
