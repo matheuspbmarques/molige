@@ -38,5 +38,8 @@
     "prettier": "^3.5.3",
     "ts-jest": "^29.3.4",
     "typescript": "^5.8.3"
+  },
+  "peerDependencies": {
+    "mongodb": "^6.17.0"
   }
 }
