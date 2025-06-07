@@ -1,5 +1,5 @@
 import main from ".";
-import { ObjectStructure } from "./index.type";
+import { ObjectStructure } from "../out/types/index.type";
 
 describe("main function", () => {
   const messageObjectStructure: ObjectStructure = {

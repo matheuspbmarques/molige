@@ -1,0 +1,9 @@
+{
+  "compilerOptions": {
+    "declaration": true,
+    "emitDeclarationOnly": true,
+    "outDir": "../../out/types",
+    "composite": true
+  },
+  "include": ["./**/*.ts"]
+}

@@ -2,7 +2,7 @@ import {
   ObjectStructure,
   ObjectStructureBoolean,
   ObjectStructureNumber,
-} from "./index.type";
+} from "../out/types/index.type";
 import { ObjectId } from "mongodb";
 
 type ObjectMock = Record<string, any>;
