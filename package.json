@@ -5,7 +5,8 @@
   "main": "src/index.js",
   "scripts": {
     "test": "jest",
-    "build": "npx tsc -p ./src/types/tsconfig.types.json && npx tsc -p ./tsconfig.json"
+    "build": "npx tsc -p ./src/types/tsconfig.types.json && npx tsc -p ./tsconfig.json",
+    "publish": "npm publish ./out"
   },
   "repository": {
     "type": "git",
