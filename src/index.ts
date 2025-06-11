@@ -6,7 +6,7 @@ import {
 
 type ObjectMock = Record<string, any>;
 
-function main(
+export default function (
   objectStructure: ObjectStructure,
   length: number,
 ): Array<ObjectMock> {
@@ -116,5 +116,3 @@ function randomGenerator(value: Array<any>) {
 
   return itemSelected;
 }
-
-export default main;
