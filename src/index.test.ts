@@ -1,8 +1,17 @@
 import main from ".";
 import { ObjectStructure } from "./index.type";
 
+type MessageObjectStructure = {
+  _id: string;
+  chatId: string;
+  message: string;
+  from: string;
+  createAt: string;
+  updateAt: string;
+};
+
 describe("main function", () => {
-  const messageObjectStructure: ObjectStructure = {
+  const messageObjectStructure: ObjectStructure<MessageObjectStructure> = {
     _id: {
       type: "mongo-object-id",
     },
