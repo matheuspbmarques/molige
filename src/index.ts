@@ -4,18 +4,18 @@ import {
   ObjectStructureNumber,
 } from "./index.type";
 
-type ObjectMock = Record<string, any>;
+type ObjectMock<T> = Record<keyof T, any>;
 
-export default function (
-  objectStructure: ObjectStructure,
+export default function <T>(
+  objectStructure: ObjectStructure<T>,
   length: number,
-): Array<ObjectMock> {
-  const objectMockList: Array<ObjectMock> = [];
+): Array<ObjectMock<T>> {
+  const objectMockList: Array<ObjectMock<T>> = [];
 
   let count = 0;
 
   while (count++ < length) {
-    const newObjectMock = objectGenerator(objectStructure);
+    const newObjectMock = objectGenerator<T>(objectStructure);
 
     objectMockList.push(newObjectMock);
   }
@@ -23,9 +23,9 @@ export default function (
   return objectMockList;
 }
 
-function objectGenerator(objectStructure: ObjectStructure) {
-  const object: ObjectMock = {};
-  const objectStructureKeys = Object.keys(objectStructure);
+function objectGenerator<T>(objectStructure: ObjectStructure<T>) {
+  const object: ObjectMock<T> = {} as ObjectMock<T>;
+  const objectStructureKeys = Object.keys(objectStructure) as Array<keyof T>;
 
   for (const objectStructureKey of objectStructureKeys) {
     const objectStructureItem = objectStructure[objectStructureKey];
@@ -63,7 +63,7 @@ function objectGenerator(objectStructure: ObjectStructure) {
 
       default:
         throw new Error(
-          `Object structure from ${objectStructureKey} type is invalid`,
+          `Object structure from ${objectStructureKey as string} type is invalid`,
         );
     }
 

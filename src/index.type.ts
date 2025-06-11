@@ -1,33 +1,33 @@
-export interface ObjectStructure {
-  [key: string]:
+export type ObjectStructure<T> = {
+  [K in keyof T]:
     | ObjectStructureMongoObjectId
     | ObjectStructureString
     | ObjectStructureNumber
     | ObjectStructureBoolean
-    | ObjectStructureObject
+    | ObjectStructureObject<T[K]>
     | ObjectStructureRandom;
-}
-export interface ObjectStructureMongoObjectId {
+};
+export type ObjectStructureMongoObjectId = {
   type: "mongo-object-id";
-}
-export interface ObjectStructureString {
+};
+export type ObjectStructureString = {
   type: "string";
   value: string;
-}
-export interface ObjectStructureNumber {
+};
+export type ObjectStructureNumber = {
   type: "int" | "float";
   min: number;
   max: number;
-}
-export interface ObjectStructureBoolean {
+};
+export type ObjectStructureBoolean = {
   type: "boolean";
   value: "random" | "true" | "false";
-}
-export interface ObjectStructureObject {
+};
+export type ObjectStructureObject<T> = {
   type: "object";
-  value: ObjectStructure;
-}
-export interface ObjectStructureRandom {
+  value: ObjectStructure<T>;
+};
+export type ObjectStructureRandom = {
   type: "random";
   value: Array<any>;
-}
+};
