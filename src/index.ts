@@ -1,118 +1,122 @@
 import {
+  ArrayStructure,
+  BooleanStructure,
+  NumberStructure,
   ObjectStructure,
-  ObjectStructureBoolean,
-  ObjectStructureNumber,
+  StringStructure,
+  ValueStructure,
 } from "./index.type";
 
-type ObjectMock<T> = Record<keyof T, any>;
+type Structure<ValueType> =
+  | StringStructure
+  | NumberStructure
+  | BooleanStructure
+  | ObjectStructure<ValueType>
+  | ArrayStructure<ValueType>;
+type MoligeReturn<ValueType> =
+  ValueType extends Array<any> ? ValueType : Array<ValueType>;
 
-export default function <T>(
-  objectStructure: ObjectStructure<T>,
+function molige<ValueType>(
+  valueStructure: ValueStructure<ValueType>,
   length: number,
-): Array<ObjectMock<T>> {
-  const objectMockList: Array<ObjectMock<T>> = [];
+): MoligeReturn<ValueType> {
+  // @ts-ignore
+  const mockList: MoligeReturn<ValueType> = [];
 
-  let count = 0;
+  let count: number = 0;
 
   while (count++ < length) {
-    const newObjectMock = objectGenerator<T>(objectStructure);
-
-    objectMockList.push(newObjectMock);
+    mockList.push(
+      generateByValueType<ValueType>(valueStructure as Structure<ValueType>),
+    );
   }
 
-  return objectMockList;
+  return mockList;
 }
 
-function objectGenerator<T>(objectStructure: ObjectStructure<T>) {
-  const object: ObjectMock<T> = {} as ObjectMock<T>;
-  const objectStructureKeys = Object.keys(objectStructure) as Array<keyof T>;
+function generateByValueType<ValueType>(
+  valueStructure: Structure<ValueType>,
+): ValueType {
+  const { type } = valueStructure;
 
-  for (const objectStructureKey of objectStructureKeys) {
-    const objectStructureItem = objectStructure[objectStructureKey];
-    const { type } = objectStructureItem;
+  switch (type) {
+    case "string":
+      return valueStructure.value as ValueType;
 
-    let value: any;
+    case "number":
+      return numberGenerator(valueStructure as NumberStructure) as ValueType;
 
-    switch (type) {
-      case "mongo-object-id": {
-        value = mongoObjectIdGenerator();
-        break;
-      }
-      case "string": {
-        value = objectStructureItem.value;
-        break;
-      }
-      case "float":
-      case "int": {
-        const { min, max } = objectStructureItem;
-        value = numberGenerator(type, min, max);
-        break;
-      }
-      case "boolean": {
-        value = booleanGenerator(objectStructureItem.value);
-        break;
-      }
-      case "object": {
-        value = objectGenerator(objectStructureItem.value);
-        break;
-      }
-      case "random": {
-        value = randomGenerator(objectStructureItem.value);
-        break;
-      }
+    case "boolean":
+      return booleanGenerator(valueStructure as BooleanStructure) as ValueType;
 
-      default:
-        throw new Error(
-          `Object structure from ${objectStructureKey as string} type is invalid`,
-        );
-    }
+    case "object":
+      return objectGenerator<ValueType>(
+        valueStructure as ObjectStructure<ValueType>,
+      );
 
-    object[objectStructureKey] = value;
+    case "array":
+      return arrayGenerator(valueStructure) as ValueType;
+
+    default:
+      throw new Error(`valueStructure type is invalid`);
+  }
+}
+
+type ObjectGeneratorReturn<ValueType> = Record<keyof ValueType, any>;
+function objectGenerator<ValueType>({
+  value,
+}: ObjectStructure<ValueType>): ObjectGeneratorReturn<ValueType> {
+  // @ts-ignore
+  const objectMock: ObjectGeneratorReturn<ValueType> = {};
+  // @ts-ignore
+  const valueKeys: Array<keyof ValueType> = Object.keys(value);
+
+  for (const valueKey of valueKeys) {
+    objectMock[valueKey] = generateByValueType(
+      // @ts-ignore
+      value[valueKey],
+    );
   }
 
-  return object;
+  return objectMock;
 }
 
-function mongoObjectIdGenerator(): string {
-  const timestamp = Math.floor(Date.now() / 1000).toString(16);
-  const random = "xxxxxxxxxxxxxxxx".replace(/x/g, () =>
-    Math.floor(Math.random() * 16).toString(16),
-  );
-
-  return timestamp + random;
-}
-
-function numberGenerator(
-  type: ObjectStructureNumber["type"],
-  min: number,
-  max: number,
-): number {
-  if (type === "int") {
+function numberGenerator({ value, min, max }: NumberStructure): number {
+  if (value === "int") {
     if (!Number.isInteger(min) || !Number.isInteger(max)) {
       throw new Error('For type "int", min and max must be integers.');
     }
     return Math.floor(Math.random() * (max - min + 1)) + min;
   }
 
-  if (type === "float") {
+  if (value === "float") {
     return Math.random() * (max - min) + min;
   }
 
   throw new Error('Invalid type. Must be "int" or "float".');
 }
 
-function booleanGenerator(value: ObjectStructureBoolean["value"]) {
-  if (value === "true") return true;
-  if (value === "false") return false;
-  return Math.random() < 0.5;
+function booleanGenerator({ value }: BooleanStructure): boolean {
+  if (value === "random") {
+    return Math.floor(Math.random() * 1) === 1;
+  }
+
+  return value === "true";
 }
 
-function randomGenerator(value: Array<any>) {
-  const { length } = value;
+function arrayGenerator<ValueType>({
+  value,
+  length,
+}: ArrayStructure<ValueType>): Array<ValueType> {
+  const arrayMock: Array<ValueType> = [];
 
-  const indexSelected = Math.floor(Math.random() * length);
+  let count: number = 0;
 
-  const itemSelected = value[indexSelected];
+  while (count++ < length) {
+    arrayMock.push(generateByValueType(value as Structure<ValueType>));
+  }
 
-  return itemSelected;
+  return arrayMock;
 }
+
+export default molige;
