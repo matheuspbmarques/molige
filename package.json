@@ -1,6 +1,6 @@
 {
   "name": "molige",
-  "version": "2.0.0",
+  "version": "3.0.0",
   "description": "MoLiGe is a mock list generator easily used to help us don't need a real database list from back-end. ",
   "main": "index.js",
   "scripts": {
